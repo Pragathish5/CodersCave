@@ -1,0 +1,129 @@
+    import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+class Book {
+    private int id;
+    private String title;
+    private String author;
+    private boolean available;
+
+    public Book(int id, String title, String author) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.available = true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+}
+
+class User {
+    private int id;
+    private String name;
+    private List<Book> borrowedBooks;
+
+    public User(int id, String name) {
+        this.id = id;
+        this.name = name;
+        this.borrowedBooks = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Book> getBorrowedBooks() {
+        return borrowedBooks;
+    }
+
+    public void borrowBook(Book book) {
+        borrowedBooks.add(book);
+    }
+
+    public void returnBook(Book book) {
+        borrowedBooks.remove(book);
+    }
+}
+
+public class Library {
+    private Map<Integer, Book> books;
+    private Map<Integer, User> users;
+
+    public Library() {
+        this.books = new HashMap<>();
+        this.users = new HashMap<>();
+    }
+
+    public void addBook(Book book) {
+        books.put(book.getId(), book);
+    }
+
+    public void addUser(User user) {
+        users.put(user.getId(), user);
+    }
+
+    public void borrowBook(int userId, int bookId) {
+        User user = users.get(userId);
+        Book book = books.get(bookId);
+        if (user != null && book != null && book.isAvailable()) {
+            user.borrowBook(book);
+            book.setAvailable(false);
+            System.out.println("Book borrowed successfully.");
+        } else {
+            System.out.println("Unable to borrow book.");
+        }
+    }
+
+    public void returnBook(int userId, int bookId) {
+        User user = users.get(userId);
+        Book book = books.get(bookId);
+        if (user != null && book != null && !book.isAvailable() && user.getBorrowedBooks().contains(book)) {
+            user.returnBook(book);
+            book.setAvailable(true);
+            System.out.println("Book returned successfully.");
+        } else {
+            System.out.println("Unable to return book.");
+        }
+    }
+
+    public static void main(String[] args) {
+        Library library = new Library();
+
+        Book book1 = new Book(1, "Java Programming", "John Doe");
+        Book book2 = new Book(2, "Python Basics", "Jane Smith");
+        library.addBook(book1);
+        library.addBook(book2);
+
+        User user1 = new User(1, "Alice");
+        User user2 = new User(2, "Bob");
+        library.addUser(user1);
+        library.addUser(user2);
+
+        library.borrowBook(1, 1); 
+        library.returnBook(1, 1); 
+    }
+}
